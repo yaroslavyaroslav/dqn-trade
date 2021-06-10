@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
-import gym
+import gym, gym_anytrading
 import numpy as np
 from collections import deque
 from keras.models import Sequential
@@ -8,6 +8,7 @@ from keras.layers import Dense
 from keras.optimizers import Adam
 
 EPISODES = 1000
+
 
 class DQNAgent:
     def __init__(self, state_size, action_size):
@@ -61,8 +62,9 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = gym.make('CartPole-v1')
-    state_size = env.observation_space.shape[0]
+    env: gym.Env = gym.make('stocks-v0', frame_bound=(50, 40000), window_size=15)
+    state_size = env.observation_space.shape[0]  # 15
+    # print(f'env.observation_space: {env.observation_space}')  # Box(-inf, inf, (15, 2), float32)
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
     # agent.load("./save/cartpole-dqn.h5")
@@ -71,6 +73,7 @@ if __name__ == "__main__":
 
     for e in range(EPISODES):
         state = env.reset()
+        print(f"state: {state}")
         state = np.reshape(state, [1, state_size])
         for time in range(500):
             # env.render()
@@ -80,6 +83,9 @@ if __name__ == "__main__":
             next_state = np.reshape(next_state, [1, state_size])
             agent.memorize(state, action, reward, next_state, done)
             state = next_state
+            print(f'times: {time}, e: {agent.epsilon:.2}')
+            print(f'action: {action}, shares: {env._share_amount} position: {env._position}')
+            print(f'state: , total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}\n')
             if done:
                 print("episode: {}/{}, score: {}, e: {:.2}"
                       .format(e, EPISODES, time, agent.epsilon))

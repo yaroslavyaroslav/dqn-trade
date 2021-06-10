@@ -1,4 +1,6 @@
 numpy
 keras
-gym
-tensorflow
+git+https://github.com/yaroslavyaroslav/gym-anytrade@develop
+tensorflow==2.4.0
+
+
