@@ -6,6 +6,7 @@ from collections import deque
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.optimizers import Adam
+import matplotlib.pyplot as plt
 
 EPISODES = 1000
 
@@ -62,7 +63,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env: gym.Env = gym.make('stocks-v0', frame_bound=(50, 40000), window_size=15)
+    env: gym.Env = gym.make('stocks-v0', frame_bound=(10, 100), window_size=10)
     state_size = env.observation_space.shape[0]  # 15
     # print(f'env.observation_space: {env.observation_space}')  # Box(-inf, inf, (15, 2), float32)
     action_size = env.action_space.n
@@ -71,26 +72,30 @@ if __name__ == "__main__":
     done = False
     batch_size = 32
 
-    for e in range(EPISODES):
-        state = env.reset()
-        state = np.reshape(state, [1, state_size])
-        for time in range(500):
-            # env.render()
-            print('================')
-            action = agent.act(state)
-            next_state, reward, done, _ = env.step(action)
-            reward = reward if not done else -10
-            next_state = np.reshape(next_state, [1, state_size])
-            agent.memorize(state, action, reward, next_state, done)
-            state = next_state
-            print(f'times: {time}, e: {agent.epsilon:.2}')
-            print(f'reward: {reward}')
-            print(f'state: action {action}, total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}')
-            if done:
-                print("episode: {}/{}, score: {}, e: {:.2}"
-                      .format(e, EPISODES, time, agent.epsilon))
-                break
-            if len(agent.memory) > batch_size:
-                agent.replay(batch_size)
-        # if e % 10 == 0:
+    # for e in range(EPISODES):
+    state = env.reset()
+    state = np.reshape(state, [1, state_size])
+    while True:
+        # env.render()
+        print('================')
+        action = agent.act(state)
+        next_state, reward, done, info = env.step(action)
+        next_state = np.reshape(next_state, [1, state_size])
+        agent.memorize(state, action, reward, next_state, done)
+        state = next_state
+        print(f'e: {agent.epsilon:.2}')
+        print(f'reward: {reward}')
+        print(f'position: {env._current_position}, action {action}, total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}')
+        if done:
+            # print("episode: {}/{}, score: {}, e: {:.2}"
+            #       .format(e, EPISODES, time, agent.epsilon))
+            print("info:", info)
+            break
+        if len(agent.memory) > batch_size:
+            agent.replay(batch_size)
+    # if e % 10 == 0:
         #     agent.save("./save/cartpole-dqn.h5")
+
+plt.cla()
+env.render_all()
+plt.show()
