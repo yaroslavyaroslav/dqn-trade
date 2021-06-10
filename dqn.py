@@ -73,10 +73,10 @@ if __name__ == "__main__":
 
     for e in range(EPISODES):
         state = env.reset()
-        print(f"state: {state}")
         state = np.reshape(state, [1, state_size])
         for time in range(500):
             # env.render()
+            print('================')
             action = agent.act(state)
             next_state, reward, done, _ = env.step(action)
             reward = reward if not done else -10
@@ -84,8 +84,8 @@ if __name__ == "__main__":
             agent.memorize(state, action, reward, next_state, done)
             state = next_state
             print(f'times: {time}, e: {agent.epsilon:.2}')
-            print(f'action: {action}, shares: {env._share_amount} position: {env._position}')
-            print(f'state: , total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}\n')
+            print(f'reward: {reward}')
+            print(f'state: action {action}, total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}')
             if done:
                 print("episode: {}/{}, score: {}, e: {:.2}"
                       .format(e, EPISODES, time, agent.epsilon))
