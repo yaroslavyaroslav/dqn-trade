@@ -1,6 +1,5 @@
 numpy
 keras
-git+https://github.com/yaroslavyaroslav/gym-anytrade@pos_long
+git+ssh://git@github.com/yaroslavyaroslav/gym-anytrade.git@pos_long
 tensorflow==2.4.0
-
 
