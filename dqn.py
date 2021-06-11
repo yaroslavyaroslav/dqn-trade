@@ -63,7 +63,7 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env: gym.Env = gym.make('stocks-v0', frame_bound=(10, 100), window_size=10)
+    env: gym.Env = gym.make('stocks-v0', frame_bound=(100, 2000), window_size=100)
     state_size = env.observation_space.shape[0]  # 15
     # print(f'env.observation_space: {env.observation_space}')  # Box(-inf, inf, (15, 2), float32)
     action_size = env.action_space.n
