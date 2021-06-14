@@ -1,5 +1,5 @@
 numpy
 keras
-tensorflow==2.5.0
+tensorflow==2.3.0
 git+ssh://git@github.com/yaroslavyaroslav/gym-anytrade.git@pos_short
 
