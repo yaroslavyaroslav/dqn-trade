@@ -85,7 +85,7 @@ if __name__ == "__main__":
         state = next_state
         print(f'e: {agent.epsilon:.2}')
         print(f'reward: {reward}')
-        print(f'position: {env._current_position}, action {action}, total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}')
+        print(f'position: {env._current_position}, action {action}, total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}\n')
         if done:
             # print("episode: {}/{}, score: {}, e: {:.2}"
             #       .format(e, EPISODES, time, agent.epsilon))
