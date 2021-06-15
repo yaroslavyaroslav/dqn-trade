@@ -87,36 +87,39 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env = gym.make('CartPole-v1')
-    state_size = env.observation_space.shape[0]
+    env: gym.Env = gym.make('stocks-v0', frame_bound=(100, 2000), window_size=100)
+    state_size = env.observation_space.shape[0]  # 15
+    # print(f'env.observation_space: {env.observation_space}')  # Box(-inf, inf, (15, 2), float32)
     action_size = env.action_space.n
     agent = DQNAgent(state_size, action_size)
-    # agent.load("./save/cartpole-ddqn.h5")
+    # agent.load("./save/cartpole-dqn.h5")
     done = False
     batch_size = 32
 
-    for e in range(EPISODES):
-        state = env.reset()
-        state = np.reshape(state, [1, state_size])
-        for time in range(500):
-            # env.render()
-            action = agent.act(state)
-            next_state, reward, done, _ = env.step(action)
-            #reward = reward if not done else -10
-            x,x_dot,theta,theta_dot = next_state
-            r1 = (env.x_threshold - abs(x)) / env.x_threshold - 0.8
-            r2 = (env.theta_threshold_radians - abs(theta)) / env.theta_threshold_radians - 0.5
-            reward = r1 + r2
+    # for e in range(EPISODES):
+    state = env.reset()
+    state = np.reshape(state, [1, state_size])
+    while True:
+        # env.render()
+        print('================')
+        action = agent.act(state)
+        next_state, reward, done, info = env.step(action)
+        next_state = np.reshape(next_state, [1, state_size])
+        agent.memorize(state, action, reward, next_state, done)
+        state = next_state
+        print(f'e: {agent.epsilon:.2}')
+        print(f'reward: {reward}')
+        print(f'position: {env._current_position}, action {action}, total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}')
+        if done:
+            # print("episode: {}/{}, score: {}, e: {:.2}"
+            #       .format(e, EPISODES, time, agent.epsilon))
+            print("info:", info)
+            break
+        if len(agent.memory) > batch_size:
+            agent.replay(batch_size)
+    # if e % 10 == 0:
+        #     agent.save("./save/cartpole-dqn.h5")
 
-            next_state = np.reshape(next_state, [1, state_size])
-            agent.memorize(state, action, reward, next_state, done)
-            state = next_state
-            if done:
-                agent.update_target_model()
-                print("episode: {}/{}, score: {}, e: {:.2}"
-                      .format(e, EPISODES, time, agent.epsilon))
-                break
-            if len(agent.memory) > batch_size:
-                agent.replay(batch_size)
-        # if e % 10 == 0:
-        #     agent.save("./save/cartpole-ddqn.h5")
+plt.cla()
+env.render_all()
+plt.show()
