@@ -10,7 +10,9 @@ from keras import backend as K
 
 import tensorflow as tf
 
+
 EPISODES = 5000
+
 
 class DQNAgent:
     def __init__(self, state_size, action_size):
@@ -34,7 +36,7 @@ class DQNAgent:
 
     def _huber_loss(self, y_true, y_pred, clip_delta=1.0):
         error = y_true - y_pred
-        cond  = K.abs(error) <= clip_delta
+        cond = K.abs(error) <= clip_delta
 
         squared_loss = 0.5 * K.square(error)
         quadratic_loss = 0.5 * K.square(clip_delta) + clip_delta * (K.abs(error) - clip_delta)
