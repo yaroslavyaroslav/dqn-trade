@@ -63,7 +63,9 @@ class DQNAgent:
 
 
 if __name__ == "__main__":
-    env: gym.Env = gym.make('stocks-v0', frame_bound=(100, 2000), window_size=100)
+    window_size = 10
+    sample = 100
+    env: gym.Env = gym.make('stocks-v0', frame_bound=(window_size, sample), window_size=window_size)
     state_size = env.observation_space.shape[0]  # 15
     # print(f'env.observation_space: {env.observation_space}')  # Box(-inf, inf, (15, 2), float32)
     action_size = env.action_space.n
@@ -75,13 +77,14 @@ if __name__ == "__main__":
     # for e in range(EPISODES):
     state = env.reset()
     state = np.reshape(state, [1, state_size])
-    action = agent.act(state)
+    action = env.action_space.sample()
     print(f'initial action: {action}')
     while True:
         # env.render()
         print('================')
         next_state, reward, done, info = env.step(action)
         next_state = np.reshape(next_state, [1, state_size])
+        action = agent.act(state)
         agent.memorize(state, action, reward, next_state, done)
         state = next_state
         print('--rnd_bot--')
