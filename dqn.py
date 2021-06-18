@@ -75,17 +75,21 @@ if __name__ == "__main__":
     # for e in range(EPISODES):
     state = env.reset()
     state = np.reshape(state, [1, state_size])
+    action = agent.act(state)
+    print(f'initial action: {action}')
     while True:
         # env.render()
         print('================')
-        action = agent.act(state)
         next_state, reward, done, info = env.step(action)
         next_state = np.reshape(next_state, [1, state_size])
         agent.memorize(state, action, reward, next_state, done)
         state = next_state
+        print('--rnd_bot--')
         print(f'e: {agent.epsilon:.2}')
+        print(f'position: {env._current_position}')
         print(f'reward: {reward}')
-        print(f'position: {env._current_position}, action {action}, total_reward: {env._total_reward}, total_profit: {env._total_profit:.5}\n')
+        print(f'total_reward: {env._total_reward}')
+        print(f'reaction: {action}')
         if done:
             # print("episode: {}/{}, score: {}, e: {:.2}"
             #       .format(e, EPISODES, time, agent.epsilon))
